@@ -36,6 +36,75 @@ var tableStorage = new botbuilder_azure.AzureBotStorage({ gzipData: false }, azu
 var bot = new builder.UniversalBot(connector);
 //bot.set('storage', tableStorage);
 
-bot.dialog('/', function (session) {
-    session.send('You said2 ' + session.message.text);
-});
+const adaptiveCard = {
+    'contentType': 'application/vnd.microsoft.card.adaptive',
+    'content': {
+      '$schema': 'http://adaptivecards.io/schemas/adaptive-card.json',
+      'type': 'AdaptiveCard',
+      'version': '1.0',
+      'body': [
+        {
+          'type': 'TextBlock',
+          'size': 'medium',
+          'weight': 'bolder',
+          'text': '출발 일자 선택',
+          'horizontalAlignment': 'center'
+        },
+        {
+          'type': 'Input.Date',
+          'placeholder': 'Due Date',
+          'id': 'DateVal',
+          'value': '2018-05-16'
+        },
+        {
+          'type': 'Input.Time',
+          'placeholder': 'Start time',
+          'id': 'TimeVal',
+          'value': '16:59'
+        }
+      ],
+      'actions': [
+        {
+          'type': 'Action.Submit',
+          'title': 'Submit',
+          'data': {
+            'id': '1234567890'
+    
+          },
+          'horizontalAlignment': 'center'
+        }
+      ]
+    
+    }
+}  
+
+
+bot.dialog('/', [
+    //1.text
+    function (session) {
+        session.send('안녕하세요 만나서 반갑습니다!');
+        builder.Prompts.text(session, '이름이 뭐에요?');
+    },
+    //2.confirm
+    function (session, results) {
+        session.send(`${results.response}님, 만나서 반갑습니다!`);
+        builder.Prompts.confirm(session, "Are you sure you wish to cancel your order?");
+    },
+    //3.choice
+    function (session, results) {
+        session.send(`${results.response}님, 선택해주세요!`);
+        builder.Prompts.choice(session, "Which color?", "red|green|blue", { listStyle: builder.ListStyle.button });
+    },
+    //ListStyle passed in as index
+    function (session, results) {
+        session.send(`${results.choice}님, 네?`);
+        builder.Prompts.choice(session, "Which color?", "red|green|blue", { listStyle: 3 });
+    },
+    function (session, results) {
+        var msg = new builder.Message(session)
+            .addAttachment(adaptiveCard)
+        session.send(msg)
+        session.endDialog(`${results.response}님, 알려주셔서 감사합니다! 끗!!`);
+    }
+    
+]);

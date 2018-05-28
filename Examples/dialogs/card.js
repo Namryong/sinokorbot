@@ -8,11 +8,18 @@ const adaptiveCard = {
       'version': '1.0',
       'body': [
         {
-          'type': 'TextBlock',
-          'size': 'medium',
-          'weight': 'bolder',
-          'text': '출발 일자 선택',
-          'horizontalAlignment': 'center'
+          'type': 'Input.Text',
+          'placeholder' : 'POL',
+          'style' : 'text',
+          'maxlength' : 10,
+          'id' : 'inputpolval'
+        },
+        {
+          'type': 'Input.Text',
+          'placeholder' : 'POD',
+          'style' : 'text',
+          'maxlength' : 10,
+          'id' : 'inputpodval'
         },
         {
           'type': 'Input.Date',
@@ -30,7 +37,7 @@ const adaptiveCard = {
       'actions': [
         {
           'type': 'Action.Submit',
-          'title': 'Submit',
+          'title': 'Inquiry',
           'data': {
             'id': '1234567890'
   

@@ -13,8 +13,8 @@ var connector = new builder.ChatConnector({
   appPassword: process.env.MicrosoftAppPassword
 })
 var Menu = {
-  ShippingSchedule: '선박 스케쥴 조회',
-  Reservation: '예약내역 조회',
+  ShippingSchedule: 'Schedule inquiry',
+  Reservation: 'Track cargo',
   ShippingConfirmation: '선적확인',
   Tracking: '화물추적',
   Staff: '담당자조회',
@@ -70,3 +70,4 @@ bot.dialog('Tracking', require('./dialogs/tracking'))
 bot.dialog('Staff', require('./dialogs/staff'))
 bot.dialog('FAQ', require('./dialogs/faq'))
 bot.dialog('Card', require('./dialogs/card'))
+bot.dialog('pol', require('./dialogs/shippingschedule/pol'))

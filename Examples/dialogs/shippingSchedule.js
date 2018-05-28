@@ -9,10 +9,9 @@ var bot = new builder.UniversalBot(connector);
 
 
 var Destination = {
-  ICN: '인천',
-  NRT: '도쿄',
-  HAN: '하노이',
-  SYD: '시드니'
+  POL: 'POL/POD',
+  POD: 'POD',
+  VSL: 'Vessel Schedule',
 }
 
 module.exports = [
@@ -25,18 +24,22 @@ module.exports = [
     //session.send('Shipping Schedule is not implemented and is instead being used to show Bot error handling')
     builder.Prompts.choice(
       session,
-      '출발 도시를 선택하세요!',
-      [Destination.ICN, Destination.NRT, Destination.HAN, Destination.SYD],
+      'Select Menu!',
+      [Destination.POL, Destination.POD, Destination.VSL],
       { listStyle: builder.ListStyle.button }
     )
-  },function(session, results){
+  },
+  function(session, results){
     var selection = results.response.entity
-    builder.Prompts.choice(
-      session,
-      '도착 도시를 선택하세요!',
-      [Destination.ICN, Destination.NRT, Destination.HAN, Destination.SYD],
-      { listStyle: builder.ListStyle.button }
-    )    
+    switch (selection)
+      {
+        case Destination.POL:
+        return session.beginDialog('pol')
+        case Destination.POD:
+        return session.beginDialog('pod')
+        case Destination.VSL:
+        return session.beginDialog('vsl')
+      }
   },function(session, results){
     // var msg = new builder.Message(session)
     //   .addAttachment(adaptiveCard);
@@ -52,5 +55,5 @@ module.exports = [
   
 ]
 
-bot.dialog('Card', require('./card'))
-  
+// bot.dialog('pod', require('./shippingschedule/pod'))  
+// bot.dialog('vsl', require('./shippingschedule/vsl'))
