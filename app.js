@@ -65,7 +65,7 @@ bot.on('conversationUpdate', function (message) {
   }
 })
 
-bot.dialog('Card', require('./dialogs/card'))
+bot.dialog('Card', require('./dialogs/cards/card'))
 
 bot.dialog('Schedule', require('./dialogs/schedule/schedule'))
 bot.dialog('POL/POD Inquiry', require('./dialogs/schedule/pol'))
