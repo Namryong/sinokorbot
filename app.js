@@ -59,6 +59,10 @@ var bot = new builder.UniversalBot(connector, [
     }
   }])
 
+const luisURL = 'https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/0d202f43-a0aa-45e1-9fd8-a4c63563d2d3?subscription-key=8251659cb718485eb7316f19ab532f39&verbose=true&timezoneOffset=0&q='
+var recognizer = new builder.LuisRecognizer(luisURL)
+bot.recognizer(recognizer)
+
 bot.on('conversationUpdate', function (message) {
   if (message.membersAdded) {
     message.membersAdded.forEach(function (identity) {
@@ -71,16 +75,16 @@ bot.on('conversationUpdate', function (message) {
 
 bot.dialog('Card', require('./dialogs/cards/card'))
 
-bot.dialog('Schedule', require('./dialogs/schedule/schedule'))
+bot.dialog('Schedule', require('./dialogs/schedule/schedule')).triggerAction({matches: 'Schedule_inquiry'})
 bot.dialog('POL/POD Inquiry', require('./dialogs/schedule/pol'))
-bot.dialog('Service Inquiry', require('./dialogs/schedule/service'))
+bot.dialog('Service Inquiry', require('./dialogs/schedule/service')).triggerAction({matches: 'Service_inquiry'})
 bot.dialog('Vessel/Voyage Inquiry', require('./dialogs/schedule/vessel'))
 
 bot.dialog('Bl', require('./dialogs/bl/bl'))
-bot.dialog('B/L Print', require('./dialogs/bl/blprint'))
+bot.dialog('B/L Print', require('./dialogs/bl/blprint')).triggerAction({matches: 'BL_print'})
 bot.dialog('SUR/SWB', require('./dialogs/bl/sur'))
 bot.dialog('B/K Confirm Print', require('./dialogs/bl/bkconfirm'))
-bot.dialog('Freeday', require('./dialogs/bl/freeday'))
+bot.dialog('Freeday', require('./dialogs/bl/freeday')).triggerAction({matches: 'Freeday'})
 bot.dialog('Delay Notice', require('./dialogs/bl/delay'))
 bot.dialog('Invoice', require('./dialogs/bl/invoice'))
 

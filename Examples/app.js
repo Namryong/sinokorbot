@@ -63,7 +63,9 @@ bot.on('conversationUpdate', function (message) {
   }
 })
 
-bot.dialog('ShippingSchedule', require('./dialogs/shippingSchedule'))
+bot.dialog('ShippingSchedule', require('./dialogs/shippingSchedule')).triggerAction({
+  matches: 'Schedule_inquiry'
+})
 bot.dialog('Reservation', require('./dialogs/reservation'))
 bot.dialog('ShippingConfirmation', require('./dialogs/shippingConfirmation'))
 bot.dialog('Tracking', require('./dialogs/tracking'))
