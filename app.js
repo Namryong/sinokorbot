@@ -35,6 +35,10 @@ var bot = new builder.UniversalBot(connector, [
       { listStyle: builder.ListStyle.button }
     )
   }, function (session, results, next) {
+    // luis 호출 후 결과 값 받아서 적절한 Entity로 Toss
+    // 13개의 Intent
+    // 각 Intent별 어떤 Entity를 필요로하는지
+
     var selection = results.response.entity
 
     switch (selection) {

@@ -1,0 +1,89 @@
+{
+	"$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+	"version": "1.0",
+	"type": "AdaptiveCard",
+	"body": [		
+		{
+			"type": "TextBlock",
+			"text": "Pickup",
+			"weight": "bolder",
+			"spacing": "medium"
+		},
+		{
+			"type": "ColumnSet",
+			"separator": true,
+			"columns": [
+				{
+					"type": "Column",
+					"width": 1,
+					"items": [
+						{
+							"type": "TextBlock",
+							"text": "2018-05-15",
+							"isSubtle": true
+						}
+					]
+				},
+				{
+					"type": "Column",
+					"width": 1,
+					"items": [
+						{
+							"type": "TextBlock",
+							"horizontalAlignment": "right",
+							"text": "LCMT Contains...",
+							"isSubtle": true
+						}
+					]
+				}
+			]
+		},
+		{
+			"type": "TextBlock",
+            "horizontalAlignment": "right",
+			"text": "SNKO19018050",
+			"spacing": "none"
+		},
+        {
+			"type": "TextBlock",
+			"text": "Return",
+			"weight": "bolder",
+			"spacing": "medium"
+		},
+		{
+			"type": "ColumnSet",
+			"separator": true,
+			"columns": [
+				{
+					"type": "Column",
+					"width": 1,
+					"items": [
+						{
+							"type": "TextBlock",
+							"text": "2018-05-15",
+							"isSubtle": true
+						}
+					]
+				},
+				{
+					"type": "Column",
+					"width": 1,
+					"items": [
+						{
+							"type": "TextBlock",
+							"horizontalAlignment": "right",
+							"text": "LCMT Contains...",
+							"isSubtle": true
+						}
+					]
+				}
+			]
+		},
+		{
+			"type": "TextBlock",
+            "horizontalAlignment": "right",
+			"text": "SNKO19018050",
+			"spacing": "none"
+		}
+	]
+}
