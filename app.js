@@ -88,4 +88,4 @@ bot.dialog('Feedback', require('./dialogs/feedback'))
 
 bot.dialog('card', require('./dialogs/cards/card'))
 
-bot.dialog('dbconnect', require('./dialogs/dbconnect'))
+// bot.dialog('dbconnect', require('./dialogs/dbconnect'))
