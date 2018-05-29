@@ -32,7 +32,7 @@ module.exports = function createStatusCard() {
                                 },
                                 {
                                     type: 'Column',
-                                    width: 'auto',
+                                    width: 'stretch',
                                     items: [
                                         {
                                             type: 'TextBlock',
@@ -44,8 +44,8 @@ module.exports = function createStatusCard() {
                                         {
                                             type: 'TextBlock',
                                             text: 'TCNU6110650',
-                                            spacing: 'none',
                                             weight: 'lighter',
+                                            separator: true,
                                             horizontalAlignment: 'left'
                                         }
                                     ]
@@ -80,7 +80,7 @@ module.exports = function createStatusCard() {
                                 },
                                 {
                                     type: 'Column',
-                                    width: 'auto',
+                                    width: 'stretch',
                                     items: [
                                         {
                                             type: 'TextBlock',
@@ -91,7 +91,7 @@ module.exports = function createStatusCard() {
                                         {
                                             type: 'TextBlock',
                                             text: 'TCNU6110650',
-                                            spacing: 'small',
+                                            separator: true,
                                             weight: 'lighter'
                                         }
                                     ]
@@ -126,7 +126,7 @@ module.exports = function createStatusCard() {
                                 },
                                 {
                                     type: 'Column',
-                                    width: 'auto',
+                                    width: 'stretch',
                                     items: [
                                         {
                                             type: 'TextBlock',
@@ -137,7 +137,7 @@ module.exports = function createStatusCard() {
                                         {
                                             type: 'TextBlock',
                                             text: 'SNKO190180501258',
-                                            spacing: 'small',
+                                            separator: true,
                                             weight: 'lighter'
                                         }
                                     ]
@@ -172,7 +172,7 @@ module.exports = function createStatusCard() {
                                 },
                                 {
                                     type: 'Column',
-                                    width: 'auto',
+                                    width: 'stretch',
                                     items: [
                                         {
                                             type: 'TextBlock',
@@ -183,7 +183,7 @@ module.exports = function createStatusCard() {
                                         {
                                             type: 'TextBlock',
                                             text: 'KMCT PUSAN / 1806N',
-                                            spacing: 'small',
+                                            separator: true,
                                             weight: 'lighter'
                                         }
                                     ]
@@ -218,7 +218,7 @@ module.exports = function createStatusCard() {
                                 },
                                 {
                                     type: 'Column',
-                                    width: 'auto',
+                                    width: 'stretch',
                                     items: [
                                         {
                                             type: 'TextBlock',
@@ -229,7 +229,7 @@ module.exports = function createStatusCard() {
                                         {
                                             type: 'TextBlock',
                                             text: 'KMCT PUSAN / 1806N',
-                                            spacing: 'small',
+                                            separator: true,
                                             weight: 'lighter'
                                         }
                                     ]
