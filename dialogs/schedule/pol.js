@@ -1,3 +1,6 @@
+let builder = require('botbuilder')
+let schedulecard = require('../schedulecard')
+
 module.exports = [
     function(session) {
         session.beginDialog('Card');
@@ -10,9 +13,18 @@ module.exports = [
             session.clearDialogStack();
             session.beginDialog('POL/POD Inquiry')
         } else {
-            // Handle results
-            console.log(results);
-            session.endDialog('입력해주셔서 감사합니다. 홈 화면으로 돌아갑니다');
+            // TODO: make call to oracle
+            // Show schedules
+            session.send('Fetching your schedules...')
+            let cards = []
+            cards.push(schedulecard('KHPR', '12 days', 'Kharis Heritage / 1721S', '05-18 FRI 06:00 ~ 05-30 WED 12:00', 'BIT → WAIGAOQIAO PIER #5'))
+            cards.push(schedulecard('CIX2', '2 days', 'HYUNDAI BRAVE / 069W', '05-18 FRI 22:00 ~ 05-20 SUN 17:00', 'HPNT → WAIGAOQIAO PIER #5'))
+            cards.map(function (card) {
+                var msg = new builder.Message(session)
+                .addAttachment(card)
+                session.send(msg)
+            })
+            session.endDialog()
         }
     }
 ];
