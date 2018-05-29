@@ -29,7 +29,6 @@ module.exports = [
     )
   },
   function(session, results){
-    console.log('schedule secon dstep')
     var selection = results.response.entity
     switch (selection)
       {
@@ -42,18 +41,7 @@ module.exports = [
         case Destination.GOBACK:
           return session.beginDialog('/')
       }
-  },function(session, results){
-    // var msg = new builder.Message(session)
-    //   .addAttachment(adaptiveCard);
-    // session.send(msg);
-    // session.endDialog('입력 후 처음으로 돌아갑니다');
-    return session.beginDialog('Card');
-  },function(session, results){
-    //var input = results.response;
-    console.log(results);
-    session.endDialog("입력해주셔서 감사합니다. 홈 화면으로 돌아갑니다");
-  }    
-
+  }
   
 ]
 
