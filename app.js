@@ -86,3 +86,6 @@ bot.dialog('Price', require('./dialogs/price'))
 bot.dialog('Faq', require('./dialogs/faq'))
 bot.dialog('Feedback', require('./dialogs/feedback'))
 
+bot.dialog('card', require('./dialogs/cards/card'))
+
+bot.dialog('dbconnect', require('./dialogs/dbconnect'))
