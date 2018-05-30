@@ -6,6 +6,8 @@ var connector = new builder.ChatConnector({
 })
 var bot = new builder.UniversalBot(connector);
 
+let schedulecard = require('../cards/schedulecard')
+
 var Destination = {
   POL: 'POL/POD Inquiry',
   SERVICE: 'Service Inquiry',
@@ -41,6 +43,20 @@ module.exports = [
         case Destination.GOBACK:
           return session.beginDialog('/')
       }
+  },function(session,results){
+    // query oracle db and get results, display with schedulecard.js
+      // session.send('Fetching your schedules...')
+      // let cards = []
+      // cards.push(schedulecard('KHPR', '12 days', 'Kharis Heritage / 1721S', '05-18 FRI 06:00 ~ 05-30 WED 12:00', 'BIT → WAIGAOQIAO PIER #5'))
+      // cards.push(schedulecard('CIX2', '2 days', 'HYUNDAI BRAVE / 069W', '05-18 FRI 22:00 ~ 05-20 SUN 17:00', 'HPNT → WAIGAOQIAO PIER #5'))
+      // // TODO: Add a button linking this card to another dialog to make booking
+      // cards.map(function (card) {
+      //     var msg = new builder.Message(session)
+      //     .addAttachment(card)
+      //     session.send(msg)
+      // })
+      session.send('계속 진행하시려면 아무말이나 입력해주세요')
+      //session.endDialog()
   }
   
 ]

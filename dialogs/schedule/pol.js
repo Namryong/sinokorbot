@@ -3,7 +3,7 @@ let schedulecard = require('../cards/schedulecard')
 
 module.exports = [
     function(session) {
-        session.beginDialog('Card');
+        session.beginDialog('card');
     },
     function(session, results) {
         if (!results.inputpolval) {
