@@ -1,5 +1,6 @@
 var restify = require('restify')
 var builder = require('botbuilder')
+require('dotenv-extended').load();
 
 // Setup Restify Server
 var server = restify.createServer()
@@ -55,6 +56,9 @@ var bot = new builder.UniversalBot(connector, [
     }
   }])
 
+var model = process.env.LUIS_APP_ENDPOINT;
+bot.recognizer(new builder.LuisRecognizer(model));
+
 bot.on('conversationUpdate', function (message) {
   if (message.membersAdded) {
     message.membersAdded.forEach(function (identity) {
@@ -67,7 +71,11 @@ bot.on('conversationUpdate', function (message) {
 
 bot.dialog('Card', require('./dialogs/cards/card'))
 
-bot.dialog('Schedule', require('./dialogs/schedule/schedule'))
+bot.dialog('Schedule', require('./dialogs/schedule/schedule')).triggerAction({
+  matches: 'Schedule_inquiry',
+  intentThreshold: 0.40
+});
+
 bot.dialog('POL/POD Inquiry', require('./dialogs/schedule/pol'))
 bot.dialog('Service Inquiry', require('./dialogs/schedule/service'))
 bot.dialog('Vessel/Voyage Inquiry', require('./dialogs/schedule/vessel'))
@@ -87,5 +95,6 @@ bot.dialog('Faq', require('./dialogs/faq'))
 bot.dialog('Feedback', require('./dialogs/feedback'))
 
 bot.dialog('card', require('./dialogs/cards/card'))
+
 
 // bot.dialog('dbconnect', require('./dialogs/dbconnect'))
