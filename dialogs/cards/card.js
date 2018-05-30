@@ -115,12 +115,9 @@ module.exports = [
             }
         }
 
-        var now = moment();
-        var oneWeekLater = moment().add(7, 'days');
-        now = now.format('YYYY-MM-DD');
-        oneWeekLater = oneWeekLater.format('YYYY-MM-DD');
+        
 
-        var card = createCard(loadingPortCode, dischargingPortCode, now, oneWeekLater);
+        var card = createCard(loadingPortCode, dischargingPortCode, '20170517', '20170517');
         var msg = new builder.Message(session).addAttachment(card);
         session.send(msg);
     }
