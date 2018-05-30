@@ -69,7 +69,7 @@ var bot = new builder.UniversalBot(connector, [
     }
   }])
 
-const luisURL = 'https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/7faed624-1cd2-447c-8302-af7a6344ad10?subscription-key=46f95c6c555b485a8be366adb055f599&verbose=true&timezoneOffset=0&q='
+const luisURL = process.env.LUIS_APP_URL
 var recognizer = new builder.LuisRecognizer(luisURL)
 bot.recognizer(recognizer)
 

@@ -7,9 +7,9 @@ exports.dbconnect = function (procedure, params, callback) {
     
     oracledb.getConnection(
         {
-          user          : "skrbot",
-          password      : "skrbottest",
-          connectString : "SKRBOT"
+          user          : process.env.dbuser,
+          password      : process.env.dbpassword,
+          connectString : process.env.connstr
         },
         function (err, connection) {
           if (err) { console.error(err.message); return; }
