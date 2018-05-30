@@ -1,0 +1,14 @@
+{
+    "name": "sinokorbot3",
+    "secretKey": "",
+    "services": [
+        {
+            "type": "endpoint",
+            "name": "sinokorbot3",
+            "id": "http://localhost:3984/api/messages",
+            "appId": "",
+            "appPassword": "",
+            "endpoint": "http://localhost:3984/api/messages"
+        }
+    ]
+}

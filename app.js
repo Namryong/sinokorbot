@@ -8,6 +8,8 @@ server.listen(process.env.port || process.env.PORT || 3984, function () {
   console.log('%s listening to %s', server.name, server.url)
 })
 
+// var connectdb = require('./database/dbconnect')
+
 // Create chat connector for communicating with the Bot Framework Service
 var connector = new builder.ChatConnector({
   appId: process.env.MicrosoftAppId,
@@ -28,7 +30,14 @@ server.post('/api/messages', connector.listen())
 
 // Receive messages from the user and respond by echoing each message back (prefixed with 'You said:')
 var bot = new builder.UniversalBot(connector, [
-  function (session) {
+  function (session) { 
+    
+    // connectdb.dbconnect('1','2', function (res) {
+    //   console.log('final final results: ')
+    //   console.log(res)
+      
+    // }); 
+
     builder.Prompts.choice(
       session,
       '안녕하세요! Sinokor Bot입니다.\n원하시는 항목을 선택하세요!',
@@ -96,5 +105,4 @@ bot.dialog('Feedback', require('./dialogs/feedback'))
 
 bot.dialog('card', require('./dialogs/cards/card'))
 
-
-// bot.dialog('dbconnect', require('./dialogs/dbconnect'))
+//bot.dialog('dbconnect', require('./dialogs/dbconnect'))
