@@ -1,7 +1,8 @@
 var builder = require('botbuilder');
 var request = require('request');
+var moment = require('moment')
 
-function createCard(pol, pod, date) {
+function createCard(pol, pod, frdate, todate) {
     const adaptiveCard = {
         contentType: 'application/vnd.microsoft.card.adaptive',
         content: {
@@ -45,8 +46,8 @@ function createCard(pol, pod, date) {
                 {
                     type: 'Input.Date',
                     placeholder: 'Start Date',
-                    id: 'StartDateVal'
-                    // value: date
+                    id: 'StartDateVal',
+                    value: frdate
                 },
                 {
                   type: 'TextBlock',
@@ -55,8 +56,8 @@ function createCard(pol, pod, date) {
                 {
                     type: 'Input.Date',
                     placeholder: 'End Date',
-                    id: 'EndDateVal'
-                    // value: date
+                    id: 'EndDateVal',
+                    value: todate
                 }
             ],
             actions: [
@@ -114,7 +115,12 @@ module.exports = [
             }
         }
 
-        var card = createCard(loadingPortCode, dischargingPortCode, '2018-04-12');
+        var now = moment();
+        var oneWeekLater = moment().add(7, 'days');
+        now = now.format('YYYY-MM-DD');
+        oneWeekLater = oneWeekLater.format('YYYY-MM-DD');
+
+        var card = createCard(loadingPortCode, dischargingPortCode, now, oneWeekLater);
         var msg = new builder.Message(session).addAttachment(card);
         session.send(msg);
     }
