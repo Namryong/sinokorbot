@@ -66,17 +66,27 @@ module.exports = [
 
         var loadingPort = ports.find(function(port) {
             return port.role === 'ofLoading';
-        }).entity;
-        var loadingPortCode = codes.find(function (code) {
-          return code.entity.replace(/ /g,'') === loadingPort.replace(/ /g,'');
-        }).resolution.values[0];
+        });
+        var dischargePort = ports.find(function(port) {
+            return port.role === 'ofDischarging';
+        });
 
-        var dischargePort = ports.find(function (port) {
-          return port.role === 'ofDischarging'
-        }).entity;
-        var dischargingPortCode = codes.find(function (code) {
-          return code.entity.replace(/ /g,'') === dischargePort.replace(/ /g,'');
-        }).resolution.values[0];
+        var loadingPortCode = '';
+        var dischargingPortCode = '';
+        if (loadingPort) {
+            loadingPortCode = codes.find(function(code) {
+              code = code.entity.replace(/ /g, '');
+              _loadingPort = loadingPort.entity.replace(/ /g, '');
+              return _loadingPort.includes(code);
+            }).resolution.values[0];
+        }
+        if (dischargePort) {
+            dischargingPortCode = codes.find(function(code) {
+                code = code.entity.replace(/ /g, '');
+                _dischargePort = dischargePort.entity.replace(/ /g, '');
+                return _dischargePort.includes(code);
+            }).resolution.values[0];
+        }
 
         var card = createCard(loadingPortCode, dischargingPortCode, '2018-04-12');
         var msg = new builder.Message(session).addAttachment(card);
