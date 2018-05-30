@@ -3,21 +3,81 @@ let schedulecard = require('../cards/schedulecard')
 var connectdb = require('../../database/dbconnect')
 
 module.exports = [
-    function(session, args) {
+    function(session, args, next) {
         console.log(args)
+
+        session.dialogData.scheduleinq = {};
+        session.dialogData.scheduleinq.loadingPortCode = ''
+        session.dialogData.scheduleinq.dischargingPortCode = ''
+
+        var loadingPortCode = '';
+        var dischargingPortCode = '';
+        if (args != undefined && args.intent != undefined) {
+            var intent = args.intent;
+            // Has roles
+            var ports = builder.EntityRecognizer.findAllEntities(intent.entities, 'Port_pattern');
+            // Has codes
+            var codes = builder.EntityRecognizer.findAllEntities(intent.entities, 'Port');
+
+            var loadingPort = ports.find(function(port) {
+                return port.role === 'ofLoading';
+            });
+            var dischargePort = ports.find(function(port) {
+                return port.role === 'ofDischarging';
+            });
+
+            if (loadingPort) {
+                loadingPortCode = codes.find(function(code) {
+                    code = code.entity.replace(/ /g, '');
+                    _loadingPort = loadingPort.entity.replace(/ /g, '');
+                    return _loadingPort.includes(code);
+                }).resolution.values[0];
+                session.dialogData.scheduleinq.loadingPortCode = loadingPortCode
+            }
+            if (dischargePort) {
+                dischargingPortCode = codes.find(function(code) {
+                    code = code.entity.replace(/ /g, '');
+                    _dischargePort = dischargePort.entity.replace(/ /g, '');
+                    return _dischargePort.includes(code);
+                }).resolution.values[0];
+                session.dialogData.scheduleinq.dischargingPortCode = dischargingPortCode
+                
+            }
+        }
+        // console.log("1:"+session.dialogData.scheduleinq.loadingPortCode)
+        if (session.dialogData.scheduleinq.loadingPortCode == '' || session.dialogData.scheduleinq.dischargingPortCode == '') {
+            session.beginDialog('Card', args);
+        } else {
+            next();
+        }
         // Check the entities
-        session.beginDialog('Card', args);
+        
     },
-    function(session, results) {
-        if (!results.inputpolval) {
+    function(session, results, next) {
+
+        // card  결과 - results
+        // LUIS 결과는 session.dialogData.scheduleinq
+        if (session.dialogData.scheduleinq.loadingPortCode == '') {
+            session.dialogData.scheduleinq.loadingPortCode = results.inputpolval;
+        }
+        if (session.dialogData.scheduleinq.dischargingPortCode == '') {
+            session.dialogData.scheduleinq.dischargingPortCode = results.inputpodval;
+        }
+
+        
+
+        if (session.dialogData.scheduleinq.loadingPortCode == '' || session.dialogData.scheduleinq.dischargingPortCode == '') {
             session.send('No POL entered. Please enter a POL.')
             // TODO: populate with existing values
             session.message.value = null;
             session.clearDialogStack();
             session.beginDialog('POL/POD Inquiry')
         } else {
-             
-            var queryParam = [results.inputpolval,results.inputpodval,results.StartDateVal.replace(/\-/g,'')]
+             //results.StartDateVal.replace(/\-/g,'')
+             console.log(session.dialogData.scheduleinq.loadingPortCode)
+            console.log(session.dialogData.scheduleinq.dischargingPortCode)
+            var queryParam = [session.dialogData.scheduleinq.loadingPortCode,session.dialogData.scheduleinq.dischargingPortCode,'20180516']
+            
             // query with user input
             connectdb.dbconnect('query1',queryParam, function (res) {
                 console.log('final final results: ')
