@@ -10,12 +10,25 @@ function createCard(pol, pod, date) {
             version: '1.0',
             body: [
                 {
+                  type: 'TextBlock',
+                  text: 'Please fill in the missing values: ',
+                  weight: 'bolder'
+                },
+                {
+                  type: 'TextBlock',
+                  text: 'Loading port'
+                },
+                {
                     type: 'Input.Text',
                     placeholder: 'POL',
                     style: 'text',
                     maxlength: 10,
                     id: 'inputpolval',
                     value: pol
+                },
+                {
+                  type: 'TextBlock',
+                  text: 'Dispatch port'
                 },
                 {
                     type: 'Input.Text',
@@ -26,10 +39,24 @@ function createCard(pol, pod, date) {
                     value: pod
                 },
                 {
+                  type: 'TextBlock',
+                  text: 'Start date'
+                },
+                {
                     type: 'Input.Date',
-                    placeholder: 'Due Date',
-                    id: 'DateVal',
-                    value: date
+                    placeholder: 'Start Date',
+                    id: 'StartDateVal'
+                    // value: date
+                },
+                {
+                  type: 'TextBlock',
+                  text: 'End date'
+                },
+                {
+                    type: 'Input.Date',
+                    placeholder: 'End Date',
+                    id: 'EndDateVal'
+                    // value: date
                 }
             ],
             actions: [
@@ -54,7 +81,7 @@ module.exports = [
             session.endDialogWithResult(session.message.value);
             return;
         }
-        
+
         var loadingPortCode = '';
         var dischargingPortCode = '';
         if (args != undefined && args.intent != undefined) {
