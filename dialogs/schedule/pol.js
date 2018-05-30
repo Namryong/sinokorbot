@@ -2,8 +2,10 @@ let builder = require('botbuilder')
 let schedulecard = require('../cards/schedulecard')
 
 module.exports = [
-    function(session) {
-        session.beginDialog('Card');
+    function(session, args) {
+        console.log(args)
+        // Check the entities
+        session.beginDialog('Card', args);
     },
     function(session, results) {
         if (!results.inputpolval) {

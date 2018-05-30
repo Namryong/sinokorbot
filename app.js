@@ -59,7 +59,7 @@ var bot = new builder.UniversalBot(connector, [
     }
   }])
 
-const luisURL = 'https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/0d202f43-a0aa-45e1-9fd8-a4c63563d2d3?subscription-key=8251659cb718485eb7316f19ab532f39&verbose=true&timezoneOffset=0&q='
+const luisURL = 'https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/7faed624-1cd2-447c-8302-af7a6344ad10?subscription-key=46f95c6c555b485a8be366adb055f599&verbose=true&timezoneOffset=0&q='
 var recognizer = new builder.LuisRecognizer(luisURL)
 bot.recognizer(recognizer)
 
@@ -75,8 +75,8 @@ bot.on('conversationUpdate', function (message) {
 
 bot.dialog('Card', require('./dialogs/cards/card'))
 
-bot.dialog('Schedule', require('./dialogs/schedule/schedule')).triggerAction({matches: 'Schedule_inquiry'})
-bot.dialog('POL/POD Inquiry', require('./dialogs/schedule/pol'))
+bot.dialog('Schedule', require('./dialogs/schedule/schedule'))
+bot.dialog('POL/POD Inquiry', require('./dialogs/schedule/pol')).triggerAction({matches: 'Schedule_inquiry'})
 bot.dialog('Service Inquiry', require('./dialogs/schedule/service')).triggerAction({matches: 'Service_inquiry'})
 bot.dialog('Vessel/Voyage Inquiry', require('./dialogs/schedule/vessel'))
 
@@ -93,7 +93,5 @@ bot.dialog('Contact', require('./dialogs/contact'))
 bot.dialog('Price', require('./dialogs/price'))
 bot.dialog('Faq', require('./dialogs/faq'))
 bot.dialog('Feedback', require('./dialogs/feedback'))
-
-bot.dialog('card', require('./dialogs/cards/card'))
 
 // bot.dialog('dbconnect', require('./dialogs/dbconnect'))
