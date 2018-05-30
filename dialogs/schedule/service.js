@@ -1,3 +1,3 @@
-module.exports = function(session) {
-    return session.beginDialog('Card');
+module.exports = function (session, args) {
+  return session.beginDialog('card', {param: args})
 }

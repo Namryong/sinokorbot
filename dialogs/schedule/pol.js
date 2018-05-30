@@ -3,8 +3,10 @@ let schedulecard = require('../cards/schedulecard')
 var connectdb = require('../../database/dbconnect')
 
 module.exports = [
-    function(session) {
-        session.beginDialog('Card');
+    function(session, args) {
+        console.log(args)
+        // Check the entities
+        session.beginDialog('Card', args);
     },
     function(session, results) {
         if (!results.inputpolval) {
@@ -15,7 +17,7 @@ module.exports = [
             session.beginDialog('POL/POD Inquiry')
         } else {
              
-            var queryParam = [results.inputpolval,results.inputpodval,results.DateVal.replace(/\-/g,'')]
+            var queryParam = [results.inputpolval,results.inputpodval,results.StartDateVal.replace(/\-/g,'')]
             // query with user input
             connectdb.dbconnect('query1',queryParam, function (res) {
                 console.log('final final results: ')
