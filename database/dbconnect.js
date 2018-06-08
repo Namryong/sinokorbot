@@ -18,11 +18,12 @@ exports.dbconnect = function (procedure, params, callback) {
             i1: params[0],  // Bind type is determined from the data.  Default direction is BIND_IN
             i2: params[1],
             i3: params[2],
+            i4: params[3],
             ret:  { type: oracledb.CURSOR, dir: oracledb.BIND_OUT }
           };
           var numRows = 10;  // number of rows to return from each call to getRows()
           connection.execute(
-            "BEGIN "+procedure+"('310002', 'ABCD', '', '', '', :i1, '', :i2, '', :i3, :i3, '', '', :ret); END;",
+            "BEGIN "+procedure+"('310002', 'ABCD', '', '', '', :i1, '', :i2, '', :i3, :i4, '', '', :ret); END;",
             //  "BEGIN skrapp.app_pkg_schedule.GET_SCHEDULE_APP('310002', 'ABCD', '', '', '', :i1, '', :i2, '', :i3, :i3, '', '', :ret); END;",
              //"BEGIN skrbot.PKG_test.sp_GetTest(:i1, :i2, :i3, :ret); END;",
              bindvars,

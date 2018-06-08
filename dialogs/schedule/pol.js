@@ -76,7 +76,17 @@ module.exports = [
              //results.StartDateVal.replace(/\-/g,'')
              console.log(session.dialogData.scheduleinq.loadingPortCode)
             console.log(session.dialogData.scheduleinq.dischargingPortCode)
-            var queryParam = [session.dialogData.scheduleinq.loadingPortCode,session.dialogData.scheduleinq.dischargingPortCode,'20170608']
+            var tDate = new Date
+/*             var yyyy = tDate.getFullYear().toString()
+            var mm = tDate.getMonth().toString()
+            var dd =tDate.getDate().toString() 
+            var startdate = yyyy+(mm[1]?mm:'0'+mm[0])+(dd[1]?dd:'0'+dd[0])   */
+            let date = require('date-and-time');
+            let now = new Date()
+            var startdate = date.format(now, 'YYYYMMDD')
+
+            var enddate =  date.format(date.addDays(now, 7), 'YYYYMMDD')
+            var queryParam = [session.dialogData.scheduleinq.loadingPortCode,session.dialogData.scheduleinq.dischargingPortCode, startdate, '20180630']
             
             // query with user input
             connectdb.dbconnect('skrapp.app_pkg_schedule.GET_SCHEDULE_APP',queryParam, function (res) {
