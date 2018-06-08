@@ -86,7 +86,7 @@ bot.on('conversationUpdate', function (message) {
 bot.dialog('Card', require('./dialogs/cards/card'))
 
 bot.dialog('Schedule', require('./dialogs/schedule/schedule'))
-bot.dialog('POL/POD Inquiry', require('./dialogs/schedule/pol')).triggerAction({matches: 'Schedule_inquiry'})
+bot.dialog('POL/POD Inquiry', require('./dialogs/schedule/pol')).triggerAction({matches: '01_POLPOD_Schedule'})
 bot.dialog('Service Inquiry', require('./dialogs/schedule/service')).triggerAction({matches: 'Service_inquiry'})
 bot.dialog('Vessel/Voyage Inquiry', require('./dialogs/schedule/vessel'))
 

@@ -22,7 +22,8 @@ exports.dbconnect = function (procedure, params, callback) {
           };
           var numRows = 10;  // number of rows to return from each call to getRows()
           connection.execute(
-             "BEGIN skrapp.app_pkg_schedule.GET_SCHEDULE_APP('310002', 'ABCD', '', '', '', :i1, '', :i2, '', :i3, :i3, '', '', :ret); END;",
+            "BEGIN "+procedure+"('310002', 'ABCD', '', '', '', :i1, '', :i2, '', :i3, :i3, '', '', :ret); END;",
+            //  "BEGIN skrapp.app_pkg_schedule.GET_SCHEDULE_APP('310002', 'ABCD', '', '', '', :i1, '', :i2, '', :i3, :i3, '', '', :ret); END;",
              //"BEGIN skrbot.PKG_test.sp_GetTest(:i1, :i2, :i3, :ret); END;",
              bindvars,
             function (err, result) {
@@ -56,19 +57,20 @@ exports.dbconnect = function (procedure, params, callback) {
                 console.log(rows);            // process rows    // process rows
                 rows.forEach(function (row) {
                   console.log(row);
-                   
+
+
                   var rowobj = {};
 
                   rowobj.SVC = row[1]
                   rowobj.VSL = row[2]
                   rowobj.TT = row[32]
-                  rowobj.VSLNM = row[13]
+                  rowobj.VSLNM = row[3]
                   rowobj.VYG = row[4]
                   rowobj.ETD= row[18]
                   rowobj.ETA = row[30]
                   rowobj.POL = row[7]
                   rowobj.POLW = row[8]
-                  rowobj.POLWNM = row[19]
+                  rowobj.POLWNM = row[9]
                   rowobj.POD = row[13]
                   rowobj.PODW = row[14]
                   rowobj.PODWNM = row[15]

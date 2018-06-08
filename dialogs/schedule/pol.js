@@ -76,17 +76,17 @@ module.exports = [
              //results.StartDateVal.replace(/\-/g,'')
              console.log(session.dialogData.scheduleinq.loadingPortCode)
             console.log(session.dialogData.scheduleinq.dischargingPortCode)
-            var queryParam = [session.dialogData.scheduleinq.loadingPortCode,session.dialogData.scheduleinq.dischargingPortCode,'20180516']
+            var queryParam = [session.dialogData.scheduleinq.loadingPortCode,session.dialogData.scheduleinq.dischargingPortCode,'20170608']
             
             // query with user input
-            connectdb.dbconnect('query1',queryParam, function (res) {
+            connectdb.dbconnect('skrapp.app_pkg_schedule.GET_SCHEDULE_APP',queryParam, function (res) {
                 console.log('final final results: ')
                 console.log(res)
 
                 session.send('Fetching your schedules...')
                 let cards = []
                 res.forEach(element => {
-                    cards.push(schedulecard(element.VSL, element.TT, element.VSLNM+" / "+element.VYG , element.ETD + '~' +element.ETA, element.POLWNM +'->' + element.PODWNM))
+                    cards.push(schedulecard(element.SVC, element.TT, element.VSLNM+" / "+element.VYG , element.ETD + '~' +element.ETA, element.POLWNM +'->' + element.PODWNM))
                 });
                 //cards.push(schedulecard('KHPR', '12 days', 'Kharis Heritage / 1721S', '05-18 FRI 06:00 ~ 05-30 WED 12:00', 'BIT → WAIGAOQIAO PIER #5'))
                 //cards.push(schedulecard('CIX2', '2 days', 'HYUNDAI BRAVE / 069W', '05-18 FRI 22:00 ~ 05-20 SUN 17:00', 'HPNT → WAIGAOQIAO PIER #5'))

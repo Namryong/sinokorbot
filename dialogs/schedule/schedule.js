@@ -58,8 +58,6 @@ module.exports = [
       session.send('계속 진행하시려면 아무말이나 입력해주세요')
       //session.endDialog()
   }
-  
 ]
-
 // bot.dialog('pod', require('./shippingschedule/pod'))  
 // bot.dialog('vsl', require('./shippingschedule/vsl'))
