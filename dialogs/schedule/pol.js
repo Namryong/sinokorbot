@@ -1,6 +1,17 @@
+var oracledb = require('oracledb'); 
 let builder = require('botbuilder')
 let schedulecard = require('../cards/schedulecard')
 var connectdb = require('../../database/dbconnect')
+let moment = require('moment')
+
+const formatDate = (pMonth) => {
+    var tmpDt = ''
+
+    tmpDt = pMonth.replace('월','').replace('일','')
+    if (tmpDt.length == 1) tmpDt = '0' + tmpDt
+    return tmpDt
+    
+}
 
 module.exports = [
     function(session, args, next) {
@@ -9,42 +20,163 @@ module.exports = [
         session.dialogData.scheduleinq = {};
         session.dialogData.scheduleinq.loadingPortCode = ''
         session.dialogData.scheduleinq.dischargingPortCode = ''
-
+        session.dialogData.scheduleinq.dateOption = ''
+        session.dialogData.scheduleinq.startDate = ''
+        session.dialogData.scheduleinq.date= ''
+        session.dialogData.scheduleinq.day= ''
+        
         var loadingPortCode = '';
         var dischargingPortCode = '';
         if (args != undefined && args.intent != undefined) {
             var intent = args.intent;
-            // Has roles
+            // Has port roles : pol / pod 구분
             var ports = builder.EntityRecognizer.findAllEntities(intent.entities, 'Port_pattern');
-            // Has codes
+            // Has port codes : 포트코드
             var codes = builder.EntityRecognizer.findAllEntities(intent.entities, 'Port');
+            // Date Option : 지난/이번/다음 - 일/주/월/년(지난주, 다음달 등)
+            var dateOpt = builder.EntityRecognizer.findAllEntities(intent.entities, 'DateOption');
+            // 요일 
+            var days = builder.EntityRecognizer.findAllEntities(intent.entities, 'Day');
+            // 일
+            var dates = builder.EntityRecognizer.findAllEntities(intent.entities, 'Date');
+            // 월
+            var months = builder.EntityRecognizer.findAllEntities(intent.entities, 'Month');
 
+            //월 일이 있으면 해당 일자로 조회
+            if (months.length != 0) {
+                var tmpYear = ''
+                var tmpMonth = ''
+                var tmpDate = ''
+                
+                tmpYear = moment().format("YYYY")
+
+                switch (dates.length) {
+                    case 0 :
+                        session.dialogData.scheduleinq.startDate = tmpYear + formatDate(months[0].entity.replace(/ /g, '')) + '01'
+                        session.dialogData.scheduleinq.endDate = moment(tmpYear + formatDate(months[0].entity.replace(/ /g, '')) + '01').endOf("month").format("YYYYMMDD")
+                        break;
+                    case 1 : 
+                        session.dialogData.scheduleinq.startDate = tmpYear + formatDate(months[0].entity.replace(/ /g, '')) + formatDate(dates[0].entity.replace(/ /g, ''))
+                        session.dialogData.scheduleinq.endDate = session.dialogData.scheduleinq.startDate
+                        break;
+                    case 2 :
+                        session.dialogData.scheduleinq.startDate = tmpYear + formatDate(months[0].entity.replace(/ /g, '')) + formatDate(dates[0].entity.replace(/ /g, ''))
+                        session.dialogData.scheduleinq.endDate = tmpYear + formatDate(months[0].entity.replace(/ /g, '')) + formatDate(dates[1].entity.replace(/ /g, ''))
+                        break;
+                }
+            }
+            
+            if (dateOpt.length != 0) {
+                var tmpDateOpt = ''
+                var startdate
+                var enddate
+
+                tmpDateOpt = dateOpt[0].resolution.values[0].replace(/ /g, '')
+
+                switch (tmpDateOpt) {
+                    case 'TODAY':
+                        startdate = moment().format("YYYYMMDD");
+                        break;
+                    case 'TOMORROW':
+                        startdate = moment().add(1,"day").format("YYYYMMDD");
+                        break;
+                    case 'DAYAFTERTOMORROW':
+                        startdate = moment().add(2,"day").format("YYYYMMDD");
+                        break;
+                    case 'THISWEEK':
+                        startdate = moment().startOf("isoWeek").format("YYYYMMDD");
+                        enddate = moment().endOf("isoWeek").format("YYYYMMDD");
+                        break;
+                    case 'LASTWEEK':
+                        startdate = moment().subtract(1, "weeks").startOf("isoWeek").format("YYYYMMDD");
+                        enddate = moment().subtract(1, "weeks").endOf("isoWeek").format("YYYYMMDD");
+                        break;
+                    case 'NEXTWEEK':
+                        startdate = moment().add(1, "weeks").startOf("isoWeek").format("YYYYMMDD");
+                        enddate = moment().add(1, "weeks").endOf("isoWeek").format("YYYYMMDD");
+                        break;
+                    case 'THISMONTH':
+                        startdate = moment().startOf("month").format("YYYYMMDD");
+                        enddate = moment().endOf("month").format("YYYYMMDD");
+                        break;
+                    case 'LASTMONTH':
+                        startdate = moment().subtract(1, "month").startOf("month").format("YYYYMMDD");
+                        enddate = moment().subtract(1, "month").endOf("month").format("YYYYMMDD");
+                        break;
+                    case 'NEXTMONTH':
+                        startdate = moment().add(1, "month").startOf("month").format("YYYYMMDD");
+                        enddate = moment().add(1, "month").endOf("month").format("YYYYMMDD");
+                        break;
+                }
+                
+                if (startdate == '') startdate = moment().format("YYYYMMDD")
+                if (enddate == '') enddate = moment(startdate,"YYYYMMDD").add(2,"weeks").format("YYYYMMDD")
+
+                session.dialogData.scheduleinq.startDate = startdate
+                session.dialogData.scheduleinq.endDate = enddate
+                
+                /*
+                var today = moment().format("YYYYMMDD")
+                var tomorrow = moment().add(1,"day").format("YYYYMMDD")
+                var dayAfterTomorrow = moment().add(2,"day").format("YYYYMMDD")
+                var yesterday = moment().subtract(1,"day").format("YYYYMMDD")
+                var dayBeforeYesterday = moment().subtract(2,"day").format("YYYYMMDD")
+                var thisweekfr = moment().startOf("isoWeek").format("YYYYMMDD")
+                var thisweekfr = moment().endOf("isoWeek").format("YYYYMMDD")
+                var nextWeekFr = moment().add(1, "weeks").startOf("isoWeek").format("YYYYMMDD")
+                var nextWeekTo = moment().add(1, "weeks").endOf("isoWeek").format("YYYYMMDD")
+                var lastWeekFr = moment().subtract(1, "weeks").startOf("isoWeek").format("YYYYMMDD")
+                var lastWeekTo = moment().subtract(1, "weeks").endOf("isoWeek").format("YYYYMMDD")
+                var thisMonthFr = moment().startOf("month").format("YYYYMMDD")
+                var thisMonthTo = moment().endOf("month").format("YYYYMMDD")
+                var nextMonthFr = moment().add(1,"month").startOf("month").format("YYYYMMDD")
+                var nextMonthTo = moment().add(1,"month").endOf("month").format("YYYYMMDD")
+                var lastMonthFr = moment().subtract(1,"month").startOf("month").format("YYYYMMDD")
+                var lastMonthTo = moment().subtract(1,"month").endOf("month").format("YYYYMMDD")
+                */
+            }
+            
             var loadingPort = ports.find(function(port) {
                 return port.role === 'ofLoading';
             });
             var dischargePort = ports.find(function(port) {
                 return port.role === 'ofDischarging';
             });
-
+            
             if (loadingPort) {
                 loadingPortCode = codes.find(function(code) {
                     code = code.entity.replace(/ /g, '');
                     _loadingPort = loadingPort.entity.replace(/ /g, '');
                     return _loadingPort.includes(code);
                 }).resolution.values[0];
+                
                 session.dialogData.scheduleinq.loadingPortCode = loadingPortCode
+    
+                //POL role을 잡으면 나머지 포트는 POD로 한다.
+                //POD role을 못잡는 경우 처리를 위해 추가
+                for (let index = 0;index <= codes.length-1; index++ ) {
+                    if (codes[index].resolution.values[0] != loadingPortCode) {
+                        dischargingPortCode = codes[index].resolution.values[0]
+                        session.dialogData.scheduleinq.dischargingPortCode = dischargingPortCode
+                    }
+                }
             }
+            
+            //POD role이 있으면 인식한 POD를 다시 ASSIGN
             if (dischargePort) {
                 dischargingPortCode = codes.find(function(code) {
                     code = code.entity.replace(/ /g, '');
                     _dischargePort = dischargePort.entity.replace(/ /g, '');
                     return _dischargePort.includes(code);
                 }).resolution.values[0];
+            
                 session.dialogData.scheduleinq.dischargingPortCode = dischargingPortCode
                 
             }
+
         }
-        // console.log("1:"+session.dialogData.scheduleinq.loadingPortCode)
+
+        // POL이나 POD가 없으면 POL,POD스캐줄 조회 카드를 보여줌.
         if (session.dialogData.scheduleinq.loadingPortCode == '' || session.dialogData.scheduleinq.dischargingPortCode == '') {
             session.beginDialog('Card', args);
         } else {
@@ -64,8 +196,6 @@ module.exports = [
             session.dialogData.scheduleinq.dischargingPortCode = results.inputpodval;
         }
 
-        
-
         if (session.dialogData.scheduleinq.loadingPortCode == '' || session.dialogData.scheduleinq.dischargingPortCode == '') {
             session.send('No POL entered. Please enter a POL.')
             // TODO: populate with existing values
@@ -74,22 +204,30 @@ module.exports = [
             session.beginDialog('POL/POD Inquiry')
         } else {
              //results.StartDateVal.replace(/\-/g,'')
-             console.log(session.dialogData.scheduleinq.loadingPortCode)
+            console.log(session.dialogData.scheduleinq.loadingPortCode)
             console.log(session.dialogData.scheduleinq.dischargingPortCode)
-            var tDate = new Date
-/*             var yyyy = tDate.getFullYear().toString()
-            var mm = tDate.getMonth().toString()
-            var dd =tDate.getDate().toString() 
-            var startdate = yyyy+(mm[1]?mm:'0'+mm[0])+(dd[1]?dd:'0'+dd[0])   */
-            let date = require('date-and-time');
-            let now = new Date()
-            var startdate = date.format(now, 'YYYYMMDD')
+            console.log(session.dialogData.scheduleinq.startDate)
+            console.log(session.dialogData.scheduleinq.endDate)
 
-            var enddate =  date.format(date.addDays(now, 7), 'YYYYMMDD')
-            var queryParam = [session.dialogData.scheduleinq.loadingPortCode,session.dialogData.scheduleinq.dischargingPortCode, startdate, '20180630']
-            
-            // query with user input
-            connectdb.dbconnect('skrapp.app_pkg_schedule.GET_SCHEDULE_APP',queryParam, function (res) {
+            var params = { 
+                p1: '310002'    // Bind type is determined from the data.  Default direction is BIND_IN 
+                , p2: 'ABCD' 
+                , p3: '' 
+                , p4: '' 
+                , p5: '' 
+                , p6: session.dialogData.scheduleinq.loadingPortCode   
+                , p7: '' 
+                , p8: session.dialogData.scheduleinq.dischargingPortCode 
+                , p9: '' 
+                , p10: session.dialogData.scheduleinq.startDate 
+                , p11: session.dialogData.scheduleinq.endDate 
+                , p12: '' 
+                , p13: '' 
+                , ret:  { type: oracledb.CURSOR, dir: oracledb.BIND_OUT } 
+              }; 
+
+              // query with user input
+            connectdb.dbconnect('skrapp.app_pkg_schedule.GET_SCHEDULE_APP', params, function (res) {
                 console.log('final final results: ')
                 console.log(res)
 

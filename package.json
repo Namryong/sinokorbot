@@ -14,7 +14,7 @@
     "botbuilder-azure": "^3.1.0",
     "date-and-time": "^0.6.2",
     "dotenv-extended": "^2.0.2",
-    "moment": "^2.22.1",
+    "moment": "^2.22.2",
     "oracledb": "^2.2.0",
     "restify": "^5.2.1"
   },
