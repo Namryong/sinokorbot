@@ -22,6 +22,7 @@ module.exports = [
         session.dialogData.scheduleinq.dischargingPortCode = ''
         session.dialogData.scheduleinq.dateOption = ''
         session.dialogData.scheduleinq.startDate = ''
+        session.dialogData.scheduleinq.endDate = ''
         session.dialogData.scheduleinq.date= ''
         session.dialogData.scheduleinq.day= ''
         
@@ -45,23 +46,38 @@ module.exports = [
             //월 일이 있으면 해당 일자로 조회
             if (months.length != 0) {
                 var tmpYear = ''
-                var tmpMonth = ''
+                var tmpFrMonth = ''
+                var tmpToMonth = ''
                 var tmpDate = ''
                 
                 tmpYear = moment().format("YYYY")
+                switch (months.lenth) {
+                    case 0 :
+                        tmpFrMonth = moment().format("MM")
+                        tmpToMonth = moment().format("MM")
+                    case 1 :
+                        tmpFrMonth = formatDate(months[0].entity.replace(/ /g, ''))
+                        tmpToMonth = formatDate(months[0].entity.replace(/ /g, ''))
+                    case 2 :
+                        tmpFrMonth = formatDate(months[0].entity.replace(/ /g, ''))
+                        tmpToMonth = formatDate(months[1].entity.replace(/ /g, ''))
+                }
 
                 switch (dates.length) {
                     case 0 :
-                        session.dialogData.scheduleinq.startDate = tmpYear + formatDate(months[0].entity.replace(/ /g, '')) + '01'
-                        session.dialogData.scheduleinq.endDate = moment(tmpYear + formatDate(months[0].entity.replace(/ /g, '')) + '01').endOf("month").format("YYYYMMDD")
+                        //일자가 없는 경우 지정 월 1일부터 말일까지.
+                        session.dialogData.scheduleinq.startDate = tmpYear + tmpFrMonth + '01'
+                        session.dialogData.scheduleinq.endDate = moment(tmpYear + tmpToMonth + '01').endOf("month").format("YYYYMMDD")
                         break;
                     case 1 : 
-                        session.dialogData.scheduleinq.startDate = tmpYear + formatDate(months[0].entity.replace(/ /g, '')) + formatDate(dates[0].entity.replace(/ /g, ''))
-                        session.dialogData.scheduleinq.endDate = session.dialogData.scheduleinq.startDate
+                        //일자가 하나만 있는 경우 월이 두 개 들어오는 경우는 없을거라 시작일로 보고 시작일 +2주
+                        session.dialogData.scheduleinq.startDate = tmpYear + tmpFrMonth + formatDate(dates[0].entity.replace(/ /g, ''))
+                        session.dialogData.scheduleinq.endDate = moment(session.dialogData.scheduleinq.startDate,"YYYYMMDD").add(2,"weeks").format("YYYYMMDD")
                         break;
                     case 2 :
-                        session.dialogData.scheduleinq.startDate = tmpYear + formatDate(months[0].entity.replace(/ /g, '')) + formatDate(dates[0].entity.replace(/ /g, ''))
-                        session.dialogData.scheduleinq.endDate = tmpYear + formatDate(months[0].entity.replace(/ /g, '')) + formatDate(dates[1].entity.replace(/ /g, ''))
+                        //일자가 두개면 지정된 월에 일자 두개 붙여서 From To
+                        session.dialogData.scheduleinq.startDate = tmpYear + tmpFrMonth + formatDate(dates[0].entity.replace(/ /g, ''))
+                        session.dialogData.scheduleinq.endDate = tmpYear + tmpToMonth + formatDate(dates[1].entity.replace(/ /g, ''))
                         break;
                 }
             }
@@ -186,7 +202,7 @@ module.exports = [
         
     },
     function(session, results, next) {
-
+        
         // card  결과 - results
         // LUIS 결과는 session.dialogData.scheduleinq
         if (session.dialogData.scheduleinq.loadingPortCode == '') {
@@ -204,11 +220,14 @@ module.exports = [
             session.beginDialog('POL/POD Inquiry')
         } else {
              //results.StartDateVal.replace(/\-/g,'')
+             if (session.dialogData.scheduleinq.startDate == '') session.dialogData.scheduleinq.startDate = moment().format("YYYYMMDD")
+             if (session.dialogData.scheduleinq.endDate == '') session.dialogData.scheduleinq.endDate = moment(session.dialogData.scheduleinq.startDate,"YYYYMMDD").add(2,"weeks").format("YYYYMMDD")
+             
             console.log(session.dialogData.scheduleinq.loadingPortCode)
             console.log(session.dialogData.scheduleinq.dischargingPortCode)
             console.log(session.dialogData.scheduleinq.startDate)
             console.log(session.dialogData.scheduleinq.endDate)
-
+             
             var params = { 
                 p1: '310002'    // Bind type is determined from the data.  Default direction is BIND_IN 
                 , p2: 'ABCD' 
@@ -228,11 +247,18 @@ module.exports = [
 
               // query with user input
             connectdb.dbconnect('skrapp.app_pkg_schedule.GET_SCHEDULE_APP', params, function (res) {
-                console.log('final final results: ')
-                console.log(res)
-
-                session.send('Fetching your schedules...')
+                
                 let cards = []
+                if (res.length == 0) {
+                    var args = {}
+                    
+                    session.send('스캐줄이 없습니다. 다른 날짜 또는 포트를 입력해주세요.')
+                    args.pol = session.dialogData.scheduleinq.loadingPortCode
+                    args.pod = session.dialogData.scheduleinq.dischargingPortCode
+                    args.frDt = session.dialogData.scheduleinq.startDate
+                    args.toDt = session.dialogData.scheduleinq.endDate
+                    session.beginDialog('Card', args);
+                }
                 res.forEach(element => {
                     cards.push(schedulecard(element.SVC, element.TT, element.VSLNM+" / "+element.VYG , element.ETD + '~' +element.ETA, element.POLWNM +'->' + element.PODWNM))
                 });
@@ -247,10 +273,14 @@ module.exports = [
                 session.endDialog()
                     
               }); 
-
+              
             // TODO: make call to oracle
             // Show schedules
             
         }
+    },
+    function () {
+        var tmp;
+        tmp = 111
     }
 ];

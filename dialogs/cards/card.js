@@ -85,39 +85,48 @@ module.exports = [
 
         var loadingPortCode = '';
         var dischargingPortCode = '';
-        if (args != undefined && args.intent != undefined) {
-            var intent = args.intent;
-            // Has roles
-            var ports = builder.EntityRecognizer.findAllEntities(intent.entities, 'Port_pattern');
-            // Has codes
-            var codes = builder.EntityRecognizer.findAllEntities(intent.entities, 'Port');
+        var frDate = '';
+        var toDate = '';
 
-            var loadingPort = ports.find(function(port) {
-                return port.role === 'ofLoading';
-            });
-            var dischargePort = ports.find(function(port) {
-                return port.role === 'ofDischarging';
-            });
-
-            if (loadingPort) {
-                loadingPortCode = codes.find(function(code) {
-                    code = code.entity.replace(/ /g, '');
-                    _loadingPort = loadingPort.entity.replace(/ /g, '');
-                    return _loadingPort.includes(code);
-                }).resolution.values[0];
-            }
-            if (dischargePort) {
-                dischargingPortCode = codes.find(function(code) {
-                    code = code.entity.replace(/ /g, '');
-                    _dischargePort = dischargePort.entity.replace(/ /g, '');
-                    return _dischargePort.includes(code);
-                }).resolution.values[0];
-            }
+        if (args != undefined) {
+            if (args.intent != undefined) {
+                var intent = args.intent;
+                // Has roles
+                var ports = builder.EntityRecognizer.findAllEntities(intent.entities, 'Port_pattern');
+                // Has codes
+                var codes = builder.EntityRecognizer.findAllEntities(intent.entities, 'Port');
+    
+                var loadingPort = ports.find(function(port) {
+                    return port.role === 'ofLoading';
+                });
+                var dischargePort = ports.find(function(port) {
+                    return port.role === 'ofDischarging';
+                });
+    
+                if (loadingPort) {
+                    loadingPortCode = codes.find(function(code) {
+                        code = code.entity.replace(/ /g, '');
+                        _loadingPort = loadingPort.entity.replace(/ /g, '');
+                        return _loadingPort.includes(code);
+                    }).resolution.values[0];
+                }
+                if (dischargePort) {
+                    dischargingPortCode = codes.find(function(code) {
+                        code = code.entity.replace(/ /g, '');
+                        _dischargePort = dischargePort.entity.replace(/ /g, '');
+                        return _dischargePort.includes(code);
+                    }).resolution.values[0];
+                }
+            } else { 
+            //}if (args.pol != '' && args.pod != '' && args.frDt != '' && args.toDt != '') {
+                loadingPortCode = args.pol
+                dischargingPortCode = args.pod
+                frDate = moment(args.frDt,"YYYYMMDD").format("YYYY[-]MM[-]DD")
+                toDate = moment(args.toDt,"YYYYMMDD").format("YYYY[-]MM[-]DD")
+            } 
         }
 
-        
-
-        var card = createCard(loadingPortCode, dischargingPortCode, '20170517', '20170517');
+        var card = createCard(loadingPortCode, dischargingPortCode, frDate, toDate);
         var msg = new builder.Message(session).addAttachment(card);
         session.send(msg);
     }

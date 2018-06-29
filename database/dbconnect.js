@@ -54,11 +54,9 @@ exports.dbconnect = function (procedure, params, callback) {
               if (err) { 
                 console.error(err.message); 
                 return; // close the result set and release the connection 
-              }  
-              else if (rows.length == 0) { // no rows, or no more rows 
-                console.log('No more rows'); // close the result set and release the connection 
-              } 
-              else if (rows.length > 0) {   // got some rows 
+              }
+              //else if (rows.length > 0) {   // got some rows 
+              else {   // got some rows 
                 rows.forEach(function (row) { 
                   var rowobj = {}; 
                   for (col = 0; col < resultSet.metaData.length; col++) { 
